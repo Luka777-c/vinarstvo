@@ -18,3 +18,12 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+
+Route::resource('partija-grozdjas', App\Http\Controllers\PartijaGrozdjaController::class)->except('show');
+
+Route::resource('fermentacijas', App\Http\Controllers\FermentacijaController::class)->except('show');
+
+Route::resource('bures', App\Http\Controllers\BureController::class)->except('show');
+
+Route::resource('vinos', App\Http\Controllers\VinoController::class)->except('show');

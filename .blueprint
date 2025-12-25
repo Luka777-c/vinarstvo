@@ -1,0 +1,52 @@
+created:
+    - app/Http/Controllers/PartijaGrozdjaController.php
+    - app/Http/Controllers/FermentacijaController.php
+    - app/Http/Controllers/BureController.php
+    - app/Http/Controllers/VinoController.php
+    - database/factories/PartijaGrozdjaFactory.php
+    - database/factories/FermentacijaFactory.php
+    - database/factories/BureFactory.php
+    - database/factories/VinoFactory.php
+    - database/migrations/2025_12_25_235741_create_partija_grozdjas_table.php
+    - database/migrations/2025_12_25_235742_create_fermentacijas_table.php
+    - database/migrations/2025_12_25_235743_create_bures_table.php
+    - database/migrations/2025_12_25_235744_create_vinos_table.php
+    - app/Models/PartijaGrozdja.php
+    - app/Models/Fermentacija.php
+    - app/Models/Bure.php
+    - app/Models/Vino.php
+    - database/seeders/PartijaGrozdjaSeeder.php
+    - database/seeders/BureSeeder.php
+    - database/seeders/FermentacijaSeeder.php
+    - database/seeders/VinoSeeder.php
+    - tests/Feature/Http/Controllers/PartijaGrozdjaControllerTest.php
+    - tests/Feature/Http/Controllers/FermentacijaControllerTest.php
+    - tests/Feature/Http/Controllers/BureControllerTest.php
+    - tests/Feature/Http/Controllers/VinoControllerTest.php
+    - app/Http/Requests/PartijaGrozdjaStoreRequest.php
+    - app/Http/Requests/PartijaGrozdjaUpdateRequest.php
+    - app/Http/Requests/FermentacijaStoreRequest.php
+    - app/Http/Requests/FermentacijaUpdateRequest.php
+    - app/Http/Requests/BureStoreRequest.php
+    - app/Http/Requests/BureUpdateRequest.php
+    - app/Http/Requests/VinoStoreRequest.php
+    - app/Http/Requests/VinoUpdateRequest.php
+    - resources/views/partijaGrozdja/index.blade.php
+    - resources/views/partijaGrozdja/create.blade.php
+    - resources/views/partijaGrozdja/edit.blade.php
+    - resources/views/fermentacija/index.blade.php
+    - resources/views/fermentacija/create.blade.php
+    - resources/views/fermentacija/edit.blade.php
+    - resources/views/bure/index.blade.php
+    - resources/views/bure/create.blade.php
+    - resources/views/bure/edit.blade.php
+    - resources/views/vino/index.blade.php
+    - resources/views/vino/create.blade.php
+    - resources/views/vino/edit.blade.php
+updated:
+    - routes/web.php
+models:
+    PartijaGrozdja: { sorta: 'string:100', kolicina: integer, status: 'enum:prijem,u_obradi,zavrseno', datum: date, napomena: 'text nullable', relationships: { hasMany: 'Fermentacija, Vino' } }
+    Fermentacija: { partija_grozdja_id: id, datum: date, temperatura: 'decimal:5,2', secer: 'decimal:5,2', faza: string, napomena: 'text nullable', relationships: { belongsTo: PartijaGrozdja } }
+    Bure: { broj_bureta: 'string unique', kapacitet: integer, tip_drveta: string, status: 'enum:prazno,puno,ciscenje', napomena: 'text nullable', relationships: { hasMany: Vino } }
+    Vino: { naziv: string, tip: string, kolicina: integer, datum_proizvodnje: date, partija_grozdja_id: id, bure_id: 'id foreign:burad', relationships: { belongsTo: 'PartijaGrozdja, Bure' } }

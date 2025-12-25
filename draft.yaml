@@ -1,0 +1,50 @@
+models:
+  PartijaGrozdja:
+    sorta: string:100
+    kolicina: integer
+    status: enum:prijem,u_obradi,zavrseno
+    datum: date
+    napomena: text nullable
+    relationships:
+      hasMany: Fermentacija, Vino
+
+  Fermentacija:
+    partija_grozdja_id: id
+    datum: date
+    temperatura: decimal:5,2
+    secer: decimal:5,2
+    faza: string
+    napomena: text nullable
+    relationships:
+      belongsTo: PartijaGrozdja
+
+  Bure:
+    broj_bureta: string unique
+    kapacitet: integer
+    tip_drveta: string
+    status: enum:prazno,puno,ciscenje
+    napomena: text nullable
+    relationships:
+      hasMany: Vino
+
+  Vino:
+    naziv: string
+    tip: string
+    kolicina: integer
+    datum_proizvodnje: date
+    partija_grozdja_id: id
+    bure_id: id foreign:burad
+    relationships:
+      belongsTo: PartijaGrozdja, Bure
+
+seeders: PartijaGrozdja, Bure, Fermentacija, Vino
+
+controllers:
+  PartijaGrozdja:
+    resource: index, create, store, edit, update, destroy
+  Fermentacija:
+    resource: index, create, store, edit, update, destroy
+  Bure:
+    resource: index, create, store, edit, update, destroy
+  Vino:
+    resource: index, create, store, edit, update, destroy
