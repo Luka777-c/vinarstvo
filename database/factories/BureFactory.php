@@ -12,11 +12,11 @@ class BureFactory extends Factory
     public function definition(): array
     {
         return [
-            'broj_bureta' => fake()->word(),
-            'kapacitet' => fake()->numberBetween(-10000, 10000),
-            'tip_drveta' => fake()->word(),
-            'status' => fake()->randomElement(["prazno","puno","ciscenje"]),
-            'napomena' => fake()->text(),
+            'broj_bureta' => 'BUR-' . $this->faker->unique()->numberBetween(100, 999),
+            'kapacitet' => $this->faker->randomElement([225, 500, 1000, 2000]),
+            'tip_drveta' => $this->faker->randomElement(['Hrast', 'Inox', 'Bagrem']),
+            'status' => $this->faker->randomElement(['prazno', 'puno', 'ciscenje']),
+            'napomena' => $this->faker->sentence(),
         ];
     }
 }

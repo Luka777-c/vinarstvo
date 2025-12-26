@@ -12,11 +12,11 @@ class PartijaGrozdjaFactory extends Factory
     public function definition(): array
     {
         return [
-            'sorta' => fake()->regexify('[A-Za-z0-9]{100}'),
-            'kolicina' => fake()->numberBetween(-10000, 10000),
-            'status' => fake()->randomElement(["prijem","u_obradi","zavrseno"]),
-            'datum' => fake()->date(),
-            'napomena' => fake()->text(),
+            'sorta' => $this->faker->randomElement(['Vranac', 'Chardonnay', 'Merlot', 'Tamjanika', 'Cabernet Sauvignon']),
+            'kolicina' => $this->faker->numberBetween(500, 5000),
+            'status' => $this->faker->randomElement(['prijem', 'u_obradi', 'zavrseno']),
+            'datum' => $this->faker->dateTimeBetween('-1 month', 'now'),
+            'napomena' => $this->faker->sentence(),
         ];
     }
 }

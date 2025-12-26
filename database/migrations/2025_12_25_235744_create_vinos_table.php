@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('kolicina');
             $table->date('datum_proizvodnje');
             $table->foreignId('partija_grozdja_id');
-            $table->foreignId('bure_id')->constrained('burads');
+            $table->foreignId('bure_id')->constrained('bures');
             $table->timestamps();
         });
 

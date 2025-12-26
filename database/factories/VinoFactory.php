@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Burad;
+use App\Models\Bure;
 use App\Models\PartijaGrozdja;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,7 +19,7 @@ class VinoFactory extends Factory
             'kolicina' => fake()->numberBetween(-10000, 10000),
             'datum_proizvodnje' => fake()->date(),
             'partija_grozdja_id' => PartijaGrozdja::factory(),
-            'bure_id' => Burad::factory(),
+            'bure_id' => Bure::factory(),
         ];
     }
 }
