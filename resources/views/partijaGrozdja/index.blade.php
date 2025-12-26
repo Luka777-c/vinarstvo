@@ -5,3 +5,64 @@
         partijaGrozdja.index template
     @endsection
 --}}
+
+<x-app-layout>
+    <div class="min-h-screen" style="background-color: #F5F1E9;">
+        <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+            
+            <div class="flex justify-between items-center mb-12">
+                <div class="flex items-center">
+                    <div class="text-4xl mr-4" style="color: #4A1D1D;">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h1 class="font-bold" style="margin: 1em; color: #000; font-size: 3rem; line-height: 1;">
+                        Partija grožđa
+                    </h1>
+                </div>
+                <div class="flex space-x-4 gap-3">
+                    <a href="{{ route('partija-grozdja.create') }}" class="px-6 py-2 text-white font-semibold rounded-md" style="background-color: #4A1D1D;">+ Nova</a>
+                    <a href="{{ route('dashboard') }}" class="px-6 py-2 text-white font-semibold rounded-md" style="background-color: #4A1D1D;">Nazad</a>
+                </div>
+            </div>
+
+            <div class="flex items-center mb-8 text-3xl gap-2">
+                <span class="mr-4">Pretraga:</span>
+                <input type="text" class="border-none rounded-full px-4 h-10 w-64 shadow-inner" style="background-color: #FFFFFF;">
+            </div>
+
+            <div class="w-full overflow-x-auto">
+                <table class="w-full text-left border-collapse" style="width: 100% !important;">
+                    <thead>
+                        <tr class="border-b-4 border-black">
+                            <th class="py-6 px-4 font-bold text-3xl">ID</th>
+                            <th class="py-6 px-4 font-bold text-3xl">Sorta</th>
+                            <th class="py-6 px-4 font-bold text-3xl">Kolicina</th>
+                            <th class="py-6 px-4 font-bold text-3xl">Status</th>
+                            <th class="py-6 px-4 font-bold text-3xl">Datum</th>
+                            <th class="py-6 px-4"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y-2 divide-gray-400">
+                        @foreach($partije as $p)
+                        <tr class="text-2xl hover:bg-stone-100 transition">
+                            <td class="py-8 px-4">{{ $p->id }}</td>
+                            <td class="py-8 px-4">{{ $p->sorta }}</td>
+                            <td class="py-8 px-4">{{ $p->kolicina }} kg</td>
+                            <td class="py-8 px-4">{{ $p->status }}</td>
+                            <td class="py-8 px-4">{{ $p->datum->format('d/m/Y') }}</td>
+                            <td class="py-8 px-4 text-right">
+                                <a href="{{ route('partija-grozdja.show', $p->id) }}" 
+                                   class="font-bold underline hover:text-stone-600" 
+                                   style="color: #D4AF37;">
+                                    Details
+                                </a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</x-app-layout>

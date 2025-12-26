@@ -23,6 +23,10 @@ class PartijaGrozdja extends Model
         'napomena',
     ];
 
+    protected $casts = [
+        'datum' => 'date',
+    ];
+
     /**
      * Get the attributes that should be cast.
      *

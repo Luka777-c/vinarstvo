@@ -11,21 +11,18 @@ use Illuminate\View\View;
 
 class VinoController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(): View
     {
-        $vinos = Vino::all();
-
-        return view('vino.index', [
-            'vinos' => $vinos,
-        ]);
+        $vinos = \App\Models\Vino::with(['partijaGrozdja', 'bure'])->get();
+        return view('vino.index', compact('vinos'));
     }
 
-    public function create(Request $request): Response
+    public function create(Request $request): View
     {
         return view('vino.create');
     }
 
-    public function store(VinoStoreRequest $request): Response
+    public function store(VinoStoreRequest $request): RedirectResponse
     {
         $vino = Vino::create($request->validated());
 
@@ -34,14 +31,14 @@ class VinoController extends Controller
         return redirect()->route('vinos.index');
     }
 
-    public function edit(Request $request, Vino $vino): Response
+    public function edit(Request $request, Vino $vino): View
     {
         return view('vino.edit', [
             'vino' => $vino,
         ]);
     }
 
-    public function update(VinoUpdateRequest $request, Vino $vino): Response
+    public function update(VinoUpdateRequest $request, Vino $vino): RedirectResponse
     {
         $vino->update($request->validated());
 
@@ -50,7 +47,7 @@ class VinoController extends Controller
         return redirect()->route('vinos.index');
     }
 
-    public function destroy(Request $request, Vino $vino): Response
+    public function destroy(Request $request, Vino $vino): RedirectResponse
     {
         $vino->delete();
 

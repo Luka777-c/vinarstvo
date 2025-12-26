@@ -2,6 +2,10 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PartijaGrozdjaController;
+use App\Http\Controllers\FermentacijaController;
+use App\Http\Controllers\BureController;
+use App\Http\Controllers\VinoController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,3 +31,11 @@ Route::resource('fermentacijas', App\Http\Controllers\FermentacijaController::cl
 Route::resource('bures', App\Http\Controllers\BureController::class)->except('show');
 
 Route::resource('vinos', App\Http\Controllers\VinoController::class)->except('show');
+
+// Sve ove rute su dostupne samo ako je korisnik ulogovan
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::resource('partija-grozdja', PartijaGrozdjaController::class);
+    Route::resource('fermentacija', FermentacijaController::class);
+    Route::resource('bure', BureController::class);
+    Route::resource('vino', VinoController::class);
+});

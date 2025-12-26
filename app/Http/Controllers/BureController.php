@@ -11,13 +11,10 @@ use Illuminate\View\View;
 
 class BureController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(): View
     {
-        $bures = Bure::all();
-
-        return view('bure.index', [
-            'bures' => $bures,
-        ]);
+        $burad = \App\Models\Bure::all();
+        return view('bure.index', compact('burad'));
     }
 
     public function create(Request $request): Response

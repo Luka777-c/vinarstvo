@@ -11,13 +11,10 @@ use Illuminate\View\View;
 
 class PartijaGrozdjaController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(): View
     {
-        $partijaGrozdjas = PartijaGrozdja::all();
-
-        return view('partijaGrozdja.index', [
-            'partijaGrozdjas' => $partijaGrozdjas,
-        ]);
+        $partije = \App\Models\PartijaGrozdja::all();
+        return view('partijaGrozdja.index', compact('partije'));
     }
 
     public function create(Request $request): Response

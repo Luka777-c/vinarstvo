@@ -11,13 +11,10 @@ use Illuminate\View\View;
 
 class FermentacijaController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(): View
     {
-        $fermentacijas = Fermentacija::all();
-
-        return view('fermentacija.index', [
-            'fermentacijas' => $fermentacijas,
-        ]);
+        $fermentacije = \App\Models\Fermentacija::with('partijaGrozdja')->get();
+        return view('fermentacija.index', compact('fermentacije'));
     }
 
     public function create(Request $request): Response

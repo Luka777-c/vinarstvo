@@ -15,6 +15,24 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('partija-grozdja.index')" :active="request()->routeIs('partija-grozdja.*')">
+                            {{ __('Partije Grožđa') }}
+                        </x-nav-link>
+                    </div>
+
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('bure.index')" :active="request()->routeIs('bure.*')">
+                            {{ __('Burad') }}
+                        </x-nav-link>
+                    </div>
+
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('vino.index')" :active="request()->routeIs('vino.*')">
+                            {{ __('Vino') }}
+                        </x-nav-link>
+                    </div>
                 </div>
             </div>
 
