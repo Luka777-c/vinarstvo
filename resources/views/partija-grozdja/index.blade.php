@@ -12,10 +12,9 @@
             
             <div class="flex justify-between items-center mb-12">
                 <div class="flex items-center">
-                    <div class="text-4xl mr-4" style="color: #4A1D1D;">
-                        <i class="fas fa-globe"></i>
-                    </div>
-                    <h1 class="font-bold" style="margin: 1em; color: #000; font-size: 3rem; line-height: 1;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#4C1C24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-barrel-icon lucide-barrel"><path d="M10 3a41 41 0 0 0 0 18"/><path d="M14 3a41 41 0 0 1 0 18"/><path d="M17 3a2 2 0 0 1 1.68.92 15.25 15.25 0 0 1 0 16.16A2 2 0 0 1 17 21H7a2 2 0 0 1-1.68-.92 15.25 15.25 0 0 1 0-16.16A2 2 0 0 1 7 3z"/><path d="M3.84 17h16.32"/><path d="M3.84 7h16.32"/></svg>
+
+                    <h1 style="font-weight: 500; margin: 1em 0.5em; color: #000; font-size: 3rem; line-height: 1;">
                         Partija grožđa
                     </h1>
                 </div>
@@ -39,7 +38,7 @@
                             <th class="py-6 px-4 font-bold text-3xl">Kolicina</th>
                             <th class="py-6 px-4 font-bold text-3xl">Status</th>
                             <th class="py-6 px-4 font-bold text-3xl">Datum</th>
-                            <th class="py-6 px-4"></th>
+                            <th class="py-6 px-4 font-bold text-3xl">Opcije</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y-2 divide-gray-400">
@@ -50,13 +49,30 @@
                             <td class="py-8 px-4">{{ $p->kolicina }} kg</td>
                             <td class="py-8 px-4">{{ $p->status }}</td>
                             <td class="py-8 px-4">{{ $p->datum->format('d/m/Y') }}</td>
-                            <td class="py-8 px-4 text-right">
-                                <a href="{{ route('partija-grozdja.show', $p->id) }}" 
-                                   class="font-bold underline hover:text-stone-600" 
-                                   style="color: #D4AF37;">
-                                    Details
-                                </a>
+                            <td class="flex justify-center">
+                                <div class="flex items-center justify-end gap-3">
+                                    <a href="{{ route('partija-grozdja.show', $p->id) }}" 
+                                    class="font-bold underline hover:text-stone-600 transition" 
+                                    style="color: #D4AF37;">
+                                        Details
+                                    </a>
+
+                                    <a href="{{ route('partija-grozdja.edit', $p->id) }}" 
+                                    class="font-bold underline hover:text-stone-600 transition" 
+                                    style="color: #4A1D1D;">
+                                        Izmeni
+                                    </a>
+
+                                    <form action="{{ route('partija-grozdja.destroy', $p->id) }}" method="POST" onsubmit="return confirm('Da li ste sigurni da želite da obrišete ovu partiju?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="font-bold underline text-red-700 hover:text-red-900 transition">
+                                            Obriši
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
+
                         </tr>
                         @endforeach
                     </tbody>

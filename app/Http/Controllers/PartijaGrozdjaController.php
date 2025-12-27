@@ -13,44 +13,60 @@ class PartijaGrozdjaController extends Controller
 {
     public function index(): View
     {
-        $partije = \App\Models\PartijaGrozdja::all();
-        return view('partijaGrozdja.index', compact('partije'));
+        $partije = PartijaGrozdja::all();
+        return view('partija-grozdja.index', compact('partije'));
     }
 
-    public function create(Request $request): Response
+    public function create(): View
     {
-        return view('partijaGrozdja.create');
+        return view('partija-grozdja.create');
     }
 
-    public function store(PartijaGrozdjaStoreRequest $request): Response
+    public function store(Request $request): RedirectResponse
     {
-        $partijaGrozdja = PartijaGrozdja::create($request->validated());
-
-        $request->session()->flash('partijaGrozdja.id', $partijaGrozdja->id);
-
-        return redirect()->route('partijaGrozdjas.index');
-    }
-
-    public function edit(Request $request, PartijaGrozdja $partijaGrozdja): Response
-    {
-        return view('partijaGrozdja.edit', [
-            'partijaGrozdja' => $partijaGrozdja,
+        $validated = $request->validate([
+            'sorta'    => 'required|string|max:100',
+            'kolicina' => 'required|integer|min:1',
+            'datum'    => 'required|date',
+            'napomena' => 'nullable|string',
         ]);
+
+        $validated['status'] = 'prijem';
+
+        PartijaGrozdja::create($validated);
+
+        return redirect()->route('partija-grozdja.index');
     }
 
-    public function update(PartijaGrozdjaUpdateRequest $request, PartijaGrozdja $partijaGrozdja): Response
+    public function edit(PartijaGrozdja $partija_grozdja): View
     {
-        $partijaGrozdja->update($request->validated());
-
-        $request->session()->flash('partijaGrozdja.id', $partijaGrozdja->id);
-
-        return redirect()->route('partijaGrozdjas.index');
+        return view('partija-grozdja.edit', ['partija' => $partija_grozdja]);
     }
 
-    public function destroy(Request $request, PartijaGrozdja $partijaGrozdja): Response
+    public function update(Request $request, PartijaGrozdja $partija_grozdja): RedirectResponse
     {
-        $partijaGrozdja->delete();
+        $validated = $request->validate([
+            'sorta'    => 'required|string|max:100',
+            'kolicina' => 'required|integer|min:1',
+            'datum'    => 'required|date',
+            'status'    => 'required|string|in:prijem,u_obradi,zavrseno',
+            'napomena' => 'nullable|string',
+        ]);
 
-        return redirect()->route('partijaGrozdjas.index');
+        $partija_grozdja->update($validated);
+
+        return redirect()->route('partija-grozdja.index');
+    }
+
+    public function destroy(PartijaGrozdja $partija_grozdja): RedirectResponse
+    {
+        $partija_grozdja->delete();
+        return redirect()->route('partija-grozdja.index');
+    }
+
+    // detaljni prikaz
+    public function show(PartijaGrozdja $partija_grozdja): View
+    {
+        return view('partija-grozdja.show', ['partija' => $partija_grozdja]);
     }
 }
