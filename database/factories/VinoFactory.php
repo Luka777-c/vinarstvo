@@ -16,7 +16,7 @@ class VinoFactory extends Factory
         return [
             'naziv' => fake()->word(),
             'tip' => fake()->word(),
-            'kolicina' => fake()->numberBetween(-10000, 10000),
+            'kolicina' => fake()->numberBetween(1, 10000),
             'datum_proizvodnje' => fake()->date(),
             'partija_grozdja_id' => PartijaGrozdja::factory(),
             'bure_id' => Bure::factory(),

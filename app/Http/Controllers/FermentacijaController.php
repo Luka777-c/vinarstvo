@@ -13,41 +13,58 @@ class FermentacijaController extends Controller
 {
     public function index(): View
     {
-        $fermentacije = \App\Models\Fermentacija::with('partijaGrozdja')->get();
+        $fermentacije = Fermentacija::with('partijaGrozdja')->orderBy('datum', 'desc')->get();
         return view('fermentacija.index', compact('fermentacije'));
     }
 
-    public function create(Request $request): Response
+    public function create(Request $request): View
     {
-        return view('fermentacija.create');
+        $partije = \App\Models\PartijaGrozdja::all();
+        return view('fermentacija.create', compact('partije'));
     }
 
-    public function store(FermentacijaStoreRequest $request): Response
+    public function store(Request $request): RedirectResponse
     {
-        $fermentacija = Fermentacija::create($request->validated());
-
-        $request->session()->flash('fermentacija.id', $fermentacija->id);
-
-        return redirect()->route('fermentacijas.index');
-    }
-
-    public function edit(Request $request, Fermentacija $fermentacija): Response
-    {
-        return view('fermentacija.edit', [
-            'fermentacija' => $fermentacija,
+        $validated = $request->validate([
+            'partija_grozdja_id' => 'required|exists:partija_grozdjas,id',
+            'datum'              => 'required|date',
+            'temperatura'        => 'required|numeric',
+            'secer'              => 'required|numeric',
+            'faza'               => 'required|string',
+            'napomena'           => 'nullable|string',
         ]);
+
+        Fermentacija::create($validated);
+
+        return redirect()->route('fermentacija.index')
+                         ->with('success', 'Zapis fermentacije je uspešno dodat!');
     }
 
-    public function update(FermentacijaUpdateRequest $request, Fermentacija $fermentacija): Response
+    public function edit(Request $request, Fermentacija $fermentacija): View
     {
-        $fermentacija->update($request->validated());
+        $partije = \App\Models\PartijaGrozdja::all();
 
-        $request->session()->flash('fermentacija.id', $fermentacija->id);
-
-        return redirect()->route('fermentacijas.index');
+        return view('fermentacija.edit', compact('fermentacija', 'partije'));
     }
 
-    public function destroy(Request $request, Fermentacija $fermentacija): Response
+    public function update(Request $request, Fermentacija $fermentacija): RedirectResponse
+    {
+        $validated = $request->validate([
+            'partija_grozdja_id' => 'required|exists:partija_grozdjas,id',
+            'datum'              => 'required|date',
+            'temperatura'        => 'required|numeric',
+            'secer'              => 'required|numeric',
+            'faza'               => 'required|string',
+            'napomena'           => 'nullable|string',
+        ]);
+
+        $fermentacija->update($validated);
+
+        return redirect()->route('fermentacija.index')
+                         ->with('success', 'Zapis fermentacije je uspešno izmenjen.');
+    }
+
+    public function destroy(Request $request, Fermentacija $fermentacija): RedirectResponse
     {
         $fermentacija->delete();
 

@@ -35,7 +35,7 @@ class PartijaGrozdjaController extends Controller
 
         PartijaGrozdja::create($validated);
 
-        return redirect()->route('partija-grozdja.index');
+        return redirect()->route('partija-grozdja.index')->with('success', 'Partija uspešno dodata!');
     }
 
     public function edit(PartijaGrozdja $partija_grozdja): View
@@ -55,7 +55,7 @@ class PartijaGrozdjaController extends Controller
 
         $partija_grozdja->update($validated);
 
-        return redirect()->route('partija-grozdja.index');
+        return redirect()->route('partija-grozdja.index')->with('success', 'Partija uspešno izmenjena!');
     }
 
     public function destroy(PartijaGrozdja $partija_grozdja): RedirectResponse

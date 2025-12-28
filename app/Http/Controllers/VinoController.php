@@ -13,44 +13,59 @@ class VinoController extends Controller
 {
     public function index(): View
     {
-        $vinos = \App\Models\Vino::with(['partijaGrozdja', 'bure'])->get();
-        return view('vino.index', compact('vinos'));
+        $vina = \App\Models\Vino::with(['partijaGrozdja', 'bure'])->latest()->get();
+        return view('vino.index', compact('vina'));
     }
 
     public function create(Request $request): View
     {
-        return view('vino.create');
+        $partije = \App\Models\PartijaGrozdja::all();
+        $burad = \App\Models\Bure::all();
+        return view('vino.create', compact('partije', 'burad'));
     }
 
-    public function store(VinoStoreRequest $request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
-        $vino = Vino::create($request->validated());
+        $validated = $request->validate([
+            'naziv'              => 'required|string|max:255',
+            'tip'                => 'required|string',
+            'kolicina'           => 'required|numeric',
+            'datum_proizvodnje'  => 'required|date',
+            'partija_grozdja_id' => 'required|exists:partija_grozdjas,id',
+            'bure_id'            => 'required|exists:bures,id',
+        ]);
 
-        $request->session()->flash('vino.id', $vino->id);
+        \App\Models\Vino::create($validated);
 
-        return redirect()->route('vinos.index');
+        return redirect()->route('vino.index')->with('success', 'Vino uspešno dodato.');
     }
 
     public function edit(Request $request, Vino $vino): View
     {
-        return view('vino.edit', [
-            'vino' => $vino,
-        ]);
+        $partije = \App\Models\PartijaGrozdja::all();
+        $burad = \App\Models\Bure::all();
+        return view('vino.edit', compact('partije', 'burad', 'vino'));
     }
 
-    public function update(VinoUpdateRequest $request, Vino $vino): RedirectResponse
+    public function update(Request $request, Vino $vino): RedirectResponse
     {
-        $vino->update($request->validated());
+        $validated = $request->validate([
+            'naziv'              => 'required|string|max:255',
+            'tip'                => 'required|string',
+            'kolicina'           => 'required|numeric',
+            'datum_proizvodnje'  => 'required|date',
+            'partija_grozdja_id' => 'required|exists:partija_grozdjas,id',
+            'bure_id'            => 'required|exists:bures,id',
+        ]);
 
-        $request->session()->flash('vino.id', $vino->id);
+        $vino->update($validated);
 
-        return redirect()->route('vinos.index');
+        return redirect()->route('vino.index')->with('success', 'Vino uspešno izmenjeno.');
     }
 
     public function destroy(Request $request, Vino $vino): RedirectResponse
     {
         $vino->delete();
-
-        return redirect()->route('vinos.index');
+        return redirect()->route('vino.index')->with('success', 'Vino obrisano iz evidencije.');
     }
 }

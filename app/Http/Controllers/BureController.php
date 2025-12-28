@@ -17,40 +17,54 @@ class BureController extends Controller
         return view('bure.index', compact('burad'));
     }
 
-    public function create(Request $request): Response
+    public function create(Request $request): View
     {
         return view('bure.create');
     }
 
-    public function store(BureStoreRequest $request): Response
+    public function store(Request $request): RedirectResponse
     {
-        $bure = Bure::create($request->validated());
-
-        $request->session()->flash('bure.id', $bure->id);
-
-        return redirect()->route('bures.index');
-    }
-
-    public function edit(Request $request, Bure $bure): Response
-    {
-        return view('bure.edit', [
-            'bure' => $bure,
+        $validated = $request->validate([
+            'broj_bureta' => 'required|unique:bures,broj_bureta',
+            'kapacitet' => 'required|numeric',
+            'tip_drveta' => 'required',
+            'status' => 'required',
+            'napomena' => 'nullable'
         ]);
+        Bure::create($validated);
+
+        return redirect()->route('bure.index')->with('success', 'Bure uspešno dodato!');
     }
 
-    public function update(BureUpdateRequest $request, Bure $bure): Response
+    public function edit(Request $request, Bure $bure): View
     {
-        $bure->update($request->validated());
-
-        $request->session()->flash('bure.id', $bure->id);
-
-        return redirect()->route('bures.index');
+        return view('bure.edit', compact('bure'));
     }
 
-    public function destroy(Request $request, Bure $bure): Response
+    public function update(Request $request, Bure $bure): RedirectResponse
+    {
+        $validated = $request->validate([
+            'broj_bureta' => 'required|unique:bures,broj_bureta,' . $bure->id,
+            'kapacitet' => 'required|numeric',
+            'tip_drveta' => 'required',
+            'status' => 'required',
+            'napomena' => 'nullable'
+        ]);
+
+        $bure->update($validated);
+        return redirect()->route('bure.index')->with('success', 'Bure uspešno izmenjeno!');
+    }
+
+    public function destroy(Request $request, Bure $bure): RedirectResponse
     {
         $bure->delete();
 
-        return redirect()->route('bures.index');
+        return redirect()->route('bure.index');
+    }
+
+    // detaljni prikaz
+    public function show(Bure $bure): View 
+    {
+        return view('bure.show', compact('bure'));
     }
 }

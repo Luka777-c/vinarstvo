@@ -15,6 +15,8 @@ class PartijaGrozdja extends Model
      *
      * @var array
      */
+    protected $table = 'partija_grozdjas';
+
     protected $fillable = [
         'sorta',
         'kolicina',

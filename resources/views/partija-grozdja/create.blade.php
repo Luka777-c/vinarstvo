@@ -7,65 +7,76 @@
 --}}
 
 <x-app-layout>
-    <div class="min-h-screen w-full" style="background-color: #F5F1E9;">
-        <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+    <div class="min-h-screen py-10 px-4" style="background-color: #F5F1E9;">
+        <div class="max-w-4xl mx-auto">
             
-            <div class="flex justify-between items-center mb-16">
-                <div class="flex items-center">
+            <div class="flex justify-between items-center mb-10">
+                <div class="flex items-center gap-4">
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#4C1C24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-barrel-icon lucide-barrel"><path d="M10 3a41 41 0 0 0 0 18"/><path d="M14 3a41 41 0 0 1 0 18"/><path d="M17 3a2 2 0 0 1 1.68.92 15.25 15.25 0 0 1 0 16.16A2 2 0 0 1 17 21H7a2 2 0 0 1-1.68-.92 15.25 15.25 0 0 1 0-16.16A2 2 0 0 1 7 3z"/><path d="M3.84 17h16.32"/><path d="M3.84 7h16.32"/></svg>
-
-                    <h1 style="font-weight: 500; margin: 1em 0.5em; color: #000; font-size: 3rem; line-height: 1;">
-                        Partija grožđa
-                    </h1>
+                    <h1 class="text-5xl font-bold text-gray-800 italic">Nova partija grožđa</h1>
                 </div>
-                <a href="{{ route('partija-grozdja.index') }}" 
-                   class="p-2 text-white text-2xl font-semibold rounded-lg" 
-                   style="margin-right: 1rem; background-color: #4A1D1D;">
+                <a href="{{ route('partija-grozdja.index') }}" class="px-6 py-2 bg-[#4A1D1D] text-white font-bold rounded-md shadow-sm">
                     < Nazad na listu
                 </a>
             </div>
 
-            <div class="max-w-5xl mx-auto bg-[#F5F1E9] overflow-hidden">
-                <form action="{{ route('partija-grozdja.store') }}" method="POST">
-                    @csrf
+            @if ($errors->any())
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-8 rounded shadow-md" role="alert">
+                    <p class="font-bold">Ups! Došlo je do greške:</p>
+                    <ul class="mt-2 ml-4 list-disc">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-                    <div class="flex items-center p-8">
-                        <label class="text-3xl font-medium w-1/3">Sorta grožđa:</label>
-                        <select name="sorta" class="w-2/3 bg-white rounded-lg h-12 text-2xl px-4">
-                            <option value="Vranac">Vranac</option>
-                            <option value="Chardonnay">Chardonnay</option>
-                            <option value="Tamjanika">Tamjanika</option>
+            <form action="{{ route('partija-grozdja.store') }}" method="POST">
+                @csrf
+                
+                <div class="bg-[#F2EBE1] border border-stone-400 rounded-3xl overflow-hidden shadow-sm mb-12">
+                    
+                    <div class="flex items-center p-6 border-b border-stone-400">
+                        <label class="text-2xl font-medium text-gray-700 w-1/3">Sorta grožđa:</label>
+                        <select name="sorta" required class="w-full bg-white border border-stone-300 rounded-md p-2 outline-none focus:ring-1 focus:ring-[#4A1D1D]">
                             <option value="Cabernet Sauvignon">Cabernet Sauvignon</option>
                             <option value="Merlot">Merlot</option>
+                            <option value="Chardonnay">Chardonnay</option>
+                            <option value="Tamjanika">Tamjanika</option>
+                            <option value="Vranac">Vranac</option>
                         </select>
                     </div>
 
-                    <div class="flex mt-2 items-center p-8">
-                        <label class="text-3xl font-medium w-1/3">Količina (kg):</label>
-                        <input type="number" name="kolicina" class="w-48 bg-white rounded-lg h-12 text-2xl px-4">
+                    <div class="flex items-center p-6 border-b border-stone-400">
+                        <label class="text-2xl font-medium text-gray-700 w-1/3">Količina (kg):</label>
+                        <input type="number" name="kolicina" required placeholder="Npr. 1200"
+                               class="w-full bg-white border border-stone-300 rounded-md p-2 outline-none focus:ring-1 focus:ring-[#4A1D1D]">
                     </div>
 
-                    <div class="flex mt-2 items-center p-8">
-                        <label class="text-3xl font-medium w-1/3">Datum prijema:</label>
-                        <input type="date" name="datum" class="w-64 bg-white border rounded-lg h-12 text-2xl px-4">
+                    <div class="flex items-center p-6 border-b border-stone-400">
+                        <label class="text-2xl font-medium text-gray-700 w-1/3">Datum prijema:</label>
+                        <input type="date" name="datum" required value="{{ date('Y-m-d') }}"
+                               class="w-full bg-white border border-stone-300 rounded-md p-2 outline-none focus:ring-1 focus:ring-[#4A1D1D]">
                     </div>
 
-                    <div class="flex mt-2 items-center p-8">
-                        <label class="text-3xl font-medium w-1/3">Napomene:</label>
-                        <input type="text" name="napomena" class="w-2/3 bg-white rounded-lg h-12 text-2xl px-4">
+                    <div class="flex items-center p-6">
+                        <label class="text-2xl font-medium text-gray-700 w-1/3">Napomena:</label>
+                        <input type="text" name="napomena" placeholder="Npr. Odličan kvalitet, visok šećer"
+                               class="w-full bg-white border border-stone-300 rounded-md p-2 outline-none focus:ring-1 focus:ring-[#4A1D1D]">
                     </div>
 
-                    <div class="flex justify-center gap-20 py-12 bg-transparent gap-2">
-                        <button type="submit" class="p-4 text-white text-3xl font-bold rounded-lg shadow-lg" style="background-color: #4A1D1D;">
-                            Sačuvaj
-                        </button>
-                        <a href="{{ route('partija-grozdja.index') }}" class="p-4 text-white text-3xl font-bold rounded-lg shadow-lg" style="background-color: #4A1D1D;">
-                            Otkaži
-                        </a>
-                    </div>
-                </form>
-            </div>
+                </div>
 
+                <div class="flex justify-center gap-32">
+                    <button type="submit" class="px-16 py-4 bg-[#4A1D1D] text-white text-3xl font-medium rounded-lg shadow-md hover:bg-stone-800 transition">
+                        Sačuvaj
+                    </button>
+                    <a href="{{ route('partija-grozdja.index') }}" class="px-16 py-4 bg-[#4A1D1D] text-white text-3xl font-medium rounded-lg shadow-md hover:bg-stone-800 transition text-center">
+                        Otkaži
+                    </a>
+                </div>
+
+            </form>
         </div>
     </div>
 </x-app-layout>

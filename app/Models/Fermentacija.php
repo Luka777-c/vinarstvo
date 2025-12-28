@@ -42,6 +42,6 @@ class Fermentacija extends Model
 
     public function partijaGrozdja(): BelongsTo
     {
-        return $this->belongsTo(PartijaGrozdja::class);
+        return $this->belongsTo(PartijaGrozdja::class, 'partija_grozdjas_id');
     }
 }

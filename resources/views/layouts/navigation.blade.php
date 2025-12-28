@@ -29,6 +29,12 @@
                     </div>
 
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('fermentacija.index')" :active="request()->routeIs('fermentacija.*')">
+                            {{ __('Fermentacije') }}
+                        </x-nav-link>
+                    </div>
+
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <x-nav-link :href="route('vino.index')" :active="request()->routeIs('vino.*')">
                             {{ __('Vino') }}
                         </x-nav-link>

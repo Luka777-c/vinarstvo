@@ -6,10 +6,9 @@ use App\Http\Controllers\PartijaGrozdjaController;
 use App\Http\Controllers\FermentacijaController;
 use App\Http\Controllers\BureController;
 use App\Http\Controllers\VinoController;
+use App\Http\Controllers\PublicController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [App\Http\Controllers\PublicController::class, 'index'])->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -31,6 +30,11 @@ Route::resource('fermentacijas', App\Http\Controllers\FermentacijaController::cl
 Route::resource('bures', App\Http\Controllers\BureController::class)->except('show');
 
 Route::resource('vinos', App\Http\Controllers\VinoController::class)->except('show');
+
+// javne rute za use cases
+Route::get('/vinoteka', [PublicController::class, 'vinoteka'])->name('public.vinoteka');
+Route::get('/podrum-mapa', [PublicController::class, 'podrum'])->name('public.podrum');
+Route::get('/pregled-sorti', [PublicController::class, 'sortastatistika'])->name('public.sortastatistika');
 
 // Sve ove rute su dostupne samo ako je korisnik ulogovan
 Route::middleware(['auth', 'verified'])->group(function () {
