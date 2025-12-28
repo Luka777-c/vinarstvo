@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('broj_bureta')->unique();
             $table->integer('kapacitet');
             $table->string('tip_drveta');
-            $table->enum('status', ["prazno","puno","ciscenje"]);
+            $table->enum('status', ['prazno', 'puno', 'ciscenje']);
             $table->text('napomena')->nullable();
             $table->timestamps();
         });

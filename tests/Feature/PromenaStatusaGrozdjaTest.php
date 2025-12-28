@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use PHPUnit\Framework\Attributes\Test;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
-use App\Models\User;
 use App\Models\PartijaGrozdja;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class PromenaStatusaGrozdjaTest extends TestCase
 {
@@ -31,13 +31,13 @@ class PromenaStatusaGrozdjaTest extends TestCase
         ];
 
         $response = $this->actingAs($user)
-                         ->put(route('partija-grozdja.update', $partija->id), $noviPodaci);
+            ->put(route('partija-grozdja.update', $partija->id), $noviPodaci);
 
         $this->assertDatabaseHas('partija_grozdjas', [
             'id' => $partija->id,
             'napomena' => 'Nova ažurirana napomena!',
         ]);
-        
+
         $this->assertDatabaseMissing('partija_grozdjas', [
             'id' => $partija->id,
             'napomena' => 'Stara napomena',

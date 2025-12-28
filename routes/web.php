@@ -1,12 +1,12 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PartijaGrozdjaController;
-use App\Http\Controllers\FermentacijaController;
 use App\Http\Controllers\BureController;
-use App\Http\Controllers\VinoController;
+use App\Http\Controllers\FermentacijaController;
+use App\Http\Controllers\PartijaGrozdjaController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\VinoController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [App\Http\Controllers\PublicController::class, 'index'])->name('home');
 
@@ -21,7 +21,6 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-
 
 Route::resource('partija-grozdjas', App\Http\Controllers\PartijaGrozdjaController::class)->except('show');
 

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('sorta', 100);
             $table->integer('kolicina');
-            $table->enum('status', ["prijem","u_obradi","zavrseno"]);
+            $table->enum('status', ['prijem', 'u_obradi', 'zavrseno']);
             $table->date('datum');
             $table->text('napomena')->nullable();
             $table->timestamps();

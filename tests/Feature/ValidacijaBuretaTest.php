@@ -2,12 +2,11 @@
 
 namespace Tests\Feature;
 
-use PHPUnit\Framework\Attributes\Test;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
-use App\Models\User;
 use App\Models\Bure;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class ValidacijaBuretaTest extends TestCase
 {
@@ -24,7 +23,7 @@ class ValidacijaBuretaTest extends TestCase
             'broj_bureta' => 'B-001',
             'kapacitet' => 500,
             'tip_drveta' => 'Hrast',
-            'status' => 'prazno'
+            'status' => 'prazno',
         ]);
 
         $response->assertSessionHasErrors('broj_bureta');

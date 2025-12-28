@@ -2,11 +2,10 @@
 
 namespace Tests\Feature;
 
-use PHPUnit\Framework\Attributes\Test;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class KreiranjeGrozdjaTest extends TestCase
 {
@@ -28,7 +27,7 @@ class KreiranjeGrozdjaTest extends TestCase
 
         // 3. Šaljemo podatke na čuvanje (kao da smo kliknuli Submit)
         $response = $this->actingAs($user)
-                         ->post(route('partija-grozdja.store'), $podaci);
+            ->post(route('partija-grozdja.store'), $podaci);
 
         // 4. Provera: Da li nas je vratilo na listu?
         $response->assertRedirect(route('partija-grozdja.index'));

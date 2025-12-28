@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\FermentacijaStoreRequest;
-use App\Http\Requests\FermentacijaUpdateRequest;
 use App\Models\Fermentacija;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,12 +12,14 @@ class FermentacijaController extends Controller
     public function index(): View
     {
         $fermentacije = Fermentacija::with('partijaGrozdja')->orderBy('datum', 'desc')->get();
+
         return view('fermentacija.index', compact('fermentacije'));
     }
 
     public function create(Request $request): View
     {
         $partije = \App\Models\PartijaGrozdja::all();
+
         return view('fermentacija.create', compact('partije'));
     }
 
@@ -27,17 +27,17 @@ class FermentacijaController extends Controller
     {
         $validated = $request->validate([
             'partija_grozdja_id' => 'required|exists:partija_grozdjas,id',
-            'datum'              => 'required|date',
-            'temperatura'        => 'required|numeric',
-            'secer'              => 'required|numeric',
-            'faza'               => 'required|string',
-            'napomena'           => 'nullable|string',
+            'datum' => 'required|date',
+            'temperatura' => 'required|numeric',
+            'secer' => 'required|numeric',
+            'faza' => 'required|string',
+            'napomena' => 'nullable|string',
         ]);
 
         Fermentacija::create($validated);
 
         return redirect()->route('fermentacija.index')
-                         ->with('success', 'Zapis fermentacije je uspešno dodat!');
+            ->with('success', 'Zapis fermentacije je uspešno dodat!');
     }
 
     public function edit(Request $request, Fermentacija $fermentacija): View
@@ -51,17 +51,17 @@ class FermentacijaController extends Controller
     {
         $validated = $request->validate([
             'partija_grozdja_id' => 'required|exists:partija_grozdjas,id',
-            'datum'              => 'required|date',
-            'temperatura'        => 'required|numeric',
-            'secer'              => 'required|numeric',
-            'faza'               => 'required|string',
-            'napomena'           => 'nullable|string',
+            'datum' => 'required|date',
+            'temperatura' => 'required|numeric',
+            'secer' => 'required|numeric',
+            'faza' => 'required|string',
+            'napomena' => 'nullable|string',
         ]);
 
         $fermentacija->update($validated);
 
         return redirect()->route('fermentacija.index')
-                         ->with('success', 'Zapis fermentacije je uspešno izmenjen.');
+            ->with('success', 'Zapis fermentacije je uspešno izmenjen.');
     }
 
     public function destroy(Request $request, Fermentacija $fermentacija): RedirectResponse

@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\BureStoreRequest;
-use App\Http\Requests\BureUpdateRequest;
 use App\Models\Bure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,6 +12,7 @@ class BureController extends Controller
     public function index(): View
     {
         $burad = \App\Models\Bure::all();
+
         return view('bure.index', compact('burad'));
     }
 
@@ -29,7 +28,7 @@ class BureController extends Controller
             'kapacitet' => 'required|numeric',
             'tip_drveta' => 'required',
             'status' => 'required',
-            'napomena' => 'nullable'
+            'napomena' => 'nullable',
         ]);
         Bure::create($validated);
 
@@ -44,14 +43,15 @@ class BureController extends Controller
     public function update(Request $request, Bure $bure): RedirectResponse
     {
         $validated = $request->validate([
-            'broj_bureta' => 'required|unique:bures,broj_bureta,' . $bure->id,
+            'broj_bureta' => 'required|unique:bures,broj_bureta,'.$bure->id,
             'kapacitet' => 'required|numeric',
             'tip_drveta' => 'required',
             'status' => 'required',
-            'napomena' => 'nullable'
+            'napomena' => 'nullable',
         ]);
 
         $bure->update($validated);
+
         return redirect()->route('bure.index')->with('success', 'Bure uspešno izmenjeno!');
     }
 
@@ -63,7 +63,7 @@ class BureController extends Controller
     }
 
     // detaljni prikaz
-    public function show(Bure $bure): View 
+    public function show(Bure $bure): View
     {
         return view('bure.show', compact('bure'));
     }
