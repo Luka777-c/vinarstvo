@@ -1,59 +1,226 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem za evidenciju proizvodnje vina
+Ovaj projekat predstavlja veb aplikaciju za digitalizaciju procesa proizvodnje vina, omogućavajući praćenje toka od prijema grožđa, preko fermentacije, do perioda odležavanja u buradima, i na kraju gde dobijamo finalni proizvod - vina.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Pregled aplikacije
+![Pocetna stranica](slike/pocetna.png)
+![Vinoteka](slike/vinoteka.png)
+![Prikaz svih vina](slike/prikaz_svih_vina.png)
+![Modifikacija fermentacije](slike/izmena_fermentacije.png)
+![Detaljan prikaz partije grozdja](slike/detaljan_prikaz_grozdja.png)
 
-## About Laravel
+## Github repozitorijum
+- Link: https://github.com/Luka777-c/vinarstvo
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Korišćeni alati
+Korišćeni su sledeći razvojni okviri, alati i biblioteke:
+- **Laravel 11 (PHP Framework):** Osnova backend logike, rutiranja i rada sa bazom
+- **Visual Studio Code:** Integrisano razvojno okruženje (IDE) sa ekstenzijama za PHP i Laravel (Intelephense, Blade Snippets)
+- **Composer:** Menadžer zavisnosti za PHP
+- **XAMPP:** Lokalni server (Apache + MySQL) za pokretanje aplikacije
+- **Github:** Sistem za kontrolu verzija i repozitorijum koda
+- **Tailwind CSS:** Za stilizovanje korisničkog interfejsa (UI)
+- **Laravel Pint:** Alat za automatsko formatiranje i stilizovanje PHP koda (Code Style)
+- **Blueprint:** Automatsko generisanje laravel komponenti
+- **Breeze:** Automatska implementacija autentifikacija za veb server
+- **PHPUnit:** Za automatizovano testiranje (Feature testovi)
+- **GitHub Actions:** Za CI/CD (kontinuiranu integraciju) i automatsko pokretanje testova
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Struktura koda i implementacija
+### Blueprint skripta
+- Korišćen blueprint alat za automatsko generisanje laravel komponenti na osnovu `draft.yaml` skripte:
+``` YAML
+models:
+  PartijaGrozdja:
+    sorta: string:100
+    kolicina: integer
+    status: enum:prijem,u_obradi,zavrseno
+    datum: date
+    napomena: text nullable
+    relationships:
+      hasMany: Fermentacija, Vino
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+  Fermentacija:
+    partija_grozdja_id: id
+    datum: date
+    temperatura: decimal:5,2
+    secer: decimal:5,2
+    faza: string
+    napomena: text nullable
+    relationships:
+      belongsTo: PartijaGrozdja
 
-## Learning Laravel
+  Bure:
+    broj_bureta: string unique
+    kapacitet: integer
+    tip_drveta: string
+    status: enum:prazno,puno,ciscenje
+    napomena: text nullable
+    relationships:
+      hasMany: Vino
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+  Vino:
+    naziv: string
+    tip: string
+    kolicina: integer
+    datum_proizvodnje: date
+    partija_grozdja_id: id
+    bure_id: id foreign:burad
+    relationships:
+      belongsTo: PartijaGrozdja, Bure
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+seeders: PartijaGrozdja, Bure, Fermentacija, Vino
 
-## Laravel Sponsors
+controllers:
+  PartijaGrozdja:
+    resource: index, create, store, edit, update, destroy
+  Fermentacija:
+    resource: index, create, store, edit, update, destroy
+  Bure:
+    resource: index, create, store, edit, update, destroy
+  Vino:
+    resource: index, create, store, edit, update, destroy
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+#### Baza podataka i Migracije (database/migrations)
+- Generisano: Fajlovi migracija sa osnovnom up() i down() strukturom, kao i podrazumevana polja id i timestamps.
+- Ručno pisano: 
+    * Unutar metode up(), ručno su definisane šeme tabela:
+    * Dodavanje kolona specifičnih tipova ($table->string(), $table->decimal(), $table->date()).
+    * Definisanje stranih ključeva (foreignId('partija_grozdja_id')->constrained()) radi povezivanja tabela.
+    * Dodavanje indeksa i ograničenja (npr. unique za broj bureta).
 
-### Premium Partners
+#### Modeli (app/Models)
+- Modeli predstavljaju sloj podataka i poslovne logike.
+- Generisano: Osnovna klasa koja nasleđuje Illuminate\Database\Eloquent\Model i HasFactory trait.
+- Ručno pisano:
+    * `$fillable` niz: Definisana su polja koja se smeju masovno upisivati (Mass Assignment Protection), čime se štiti baza od malicioznih unosa.
+    * Relacije: Implementirane su metode belongsTo i hasMany koje povezuju entitete.
+        * Primer: U modelu Vino, napisana je metoda partijaGrozdja() koja definiše da vino pripada jednoj partiji grožđa.
+    * Casting: Podešavanje tipova podataka (npr. konverzija datuma).
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+#### Kontroleri (app/Http/Controllers)
+- Kontroleri obrađuju HTTP zahteve i povezuju modele sa view-ovima.
+- Generisano: Klasa kontrolera i prazne metode (stubs) za 7 standardnih RESTful akcija: index, create, store, show, edit, update, destroy.
+- Ručno pisano (Srž aplikacije):
+    * index metoda: Implementirano dovlačenje podataka iz baze i slanje u View.
+    * store i update metode:
+        * Implementirana validacija ($request->validate()) koja proverava tipove podataka i obavezna polja pre upisa.
+        * Logika snimanja u bazu korišćenjem Eloquent ORM-a.
+        * Redirekcija korisnika nakon uspešne akcije sa flash porukom.
+    * Specifična logika: U VinoController i FermentacijaController, ručno je dodato povlačenje povezanih podataka (npr. lista slobodnih buradi) kako bi se prikazali u padajućim menijima (select box).
 
-## Contributing
+#### Korisnički interfejs / View (resources/views)
+- Ovaj deo aplikacije je u potpunosti ručno kreiran, jer Laravel ne generiše HTML kod za specifične forme.
+* Struktura: Organizovana u podfoldere po entitetima (vino, bure...).
+* Layout: Kreiran je layouts/app.blade.php kao glavni šablon koji sadrži navigaciju i učitava CSS stilove, kako bi se izbeglo ponavljanje koda.
+* Blade sintaksa: Korišćene su direktive @foreach za ispis tabela, @if za prikaz grešaka i @csrf za zaštitu formi.
+* Dizajn: Primenjene su Tailwind CSS klase za stilizovanje tabela, dugmadi i formi, čime je postignut moderan i responzivan izgled (prilagođen mobilnim uređajima).
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+#### Rutiranje (routes/web.php)
+- Generisano: Prazan fajl sa osnovnom rutom.
+- Ručno pisano:
+    * Definisane su Route::resource linije koje automatski mapiraju URL-ove na metode kontrolera.
+    * Dodat je middleware(['auth']) koji štiti rute, onemogućavajući neulogovanim korisnicima pristup aplikaciji.
 
-## Code of Conduct
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### Implementirani use cases
+* Aplikacija pokriva tri ključna procesa proizvodnje kroz jednostavan korisnički interfejs. 
+    - Prvi deo omogućava pregled prijema sirovine gde tehnolog unosi podatke o sorti, količini i kvalitetu grožđa.
+    - Drugi deo služi za upravljanje buradima i praćenje toka fermentacije kroz dnevna merenja. 
+    - Treći deo objedinjue ove podatke kreiranjem finalnog zapisa o vinu, čime se povezuju sirovina i sudovi radi potpune sledljivosti proizvoda.
 
-## Security Vulnerabilities
+### Testovi
+#### Testiranje unosa podataka (KreiranjeGrozdjaTest.php)
+* Opis: Proverava "Happy Path" scenario – da li sistem uspešno prihvata validne podatke.
+* Metodologija: Test šalje POST zahtev sa podacima o grožđu.
+* Verifikacija: Koristi se assertDatabaseHas metoda da se potvrdi da je zapis fizički upisan u bazu podataka, i assertRedirect da se potvrdi preusmerenje korisnika.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+#### Testiranje poslovnih pravila (ValidacijaBuretaTest.php)
+* Opis: Proverava robusnost sistema na greške i duplikate.
+* Scenario: Pokušaj unosa bureta sa brojem "B-100" koji već postoji u bazi.
+* Verifikacija: Test očekuje da sistem vrati grešku validacije (assertSessionHasErrors), čime se potvrđuje da mehanizam zaštite integriteta podataka radi ispravno.
 
-## License
+#### Testiranje relacija (KreiranjeFermentacijeTest.php)
+* Opis: Proverava integritet veza između tabela (Foreign Keys).
+* Scenario: Kreiranje zapisa fermentacije koji mora biti vezan za postojeću partiju grožđa.
+* Verifikacija: Potvrđuje se da je strani ključ (partija_grozdja_id) ispravno sačuvan.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### Testiranje ažuriranja podataka (PromenaStatusaGrozdjaTest.php)
+* Opis: Proverava funkcionalnost izmene (Update).
+* Scenario: Promena statusa ili napomene na postojećoj partiji.
+* Verifikacija: Potvrđuje se da su novi podaci prisutni, a stari podaci uklonjeni (assertDatabaseMissing).
+
+
+### Github akcije
+* U repozitorijumu je konfigurisan GitHub Actions workflow koji služi za kontinuiranu integraciju i automatsku proveru koda. 
+* Pri svakom slanju izmena na GitHub (git push), sistem automatski podiže testno okruženje, instalira potrebne zavisnosti i pokreće sve definisane testove. 
+* Github actions skripta `testovi.yaml`:
+``` YAML
+name: Testovi Laravel
+
+on: 
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+    
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+
+    steps:
+      - name: Proveru koda
+        uses: actions/checkout@v4
+
+      - name: Podesavanje PHP-a 
+        uses: shivammathur/setup-php@v2
+        with: 
+          php-version: '8.4'
+          extensions: mbstring, dom, fileinfo, pdo, mysql, json, curl, sqlite3
+          coverage: none
+
+      # composer zavisnosti
+      - name: Kes composer zavisnosti
+        uses: actions/cache@v4
+        with: 
+              path: vendor
+              key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+              restore-keys: |
+               ${{ runner.os }}-composer-
+
+      - name: Instalacija composer paketa
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Kopiranje .env.example u .env fajl
+        run: cp .env.example .env
+
+      - name: Generisanje aplikacijskog kljuca
+        run: php artisan key:generate
+
+      # baza za testiranje
+      - name: Create Database
+        run: |
+          touch database/database.sqlite
+
+      # migracije
+      - name: Execute Migrations
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan migrate --force
+      
+      - name: Provera code style koristeci Pint
+        run: ./vendor/bin/pint --test
+
+      - name: Pokretanje testova
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan test
+
+      - name: Uspesno zavrsen posao
+        run: echo "✅Uspesno!"
+```
